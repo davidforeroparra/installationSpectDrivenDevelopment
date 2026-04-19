@@ -46,8 +46,8 @@ La IA creará `sddd/` con templates, agentes, skills y el manual. Reportará cad
 
 | Situación | Instrucción a la IA |
 |:---|:---|
-| Proyecto nuevo, sin código todavía | "Lee `.agent/skills/sdddInit.md` y ejecuta el flujo de inicialización." |
-| Proyecto existente, ya tiene código | "Lee `.agent/skills/sdddRetro.md` y ejecuta el flujo completo." |
+| Proyecto nuevo, sin código todavía | "Lee `.agent/skills/sddd/SKILL.md` y ejecuta el flujo de inicialización." |
+| Proyecto existente, ya tiene código | "Lee `.agent/skills/sddd/SKILL.md` y ejecuta el modo retro." |
 
 **Sobre el archivo bootstrap**
 
@@ -120,7 +120,7 @@ Al aplicar SdDd a un proyecto, crea esta estructura en la raíz:
 tuProyecto/
 │
 ├── .agent/
-│   ├── agents/
+│   ├── agents/                         ← 6 sub-agentes especializados
 │   │   ├── agSemantico.md
 │   │   ├── agEncuesta.md
 │   │   ├── agDocumentacion.md
@@ -128,9 +128,12 @@ tuProyecto/
 │   │   ├── agTasks.md
 │   │   └── agVerificacion.md
 │   └── skills/
-│       ├── sdddInit.md
-│       ├── sdddWork.md
-│       └── sdddRetro.md
+│       └── sddd/                       ← meta-skill SdDd (carpeta canónica)
+│           ├── SKILL.md                ← orquestador — punto de entrada único
+│           └── sub/                    ← sub-skills invocadas por el orquestador
+│               ├── sdddInit.md
+│               ├── sdddWork.md
+│               └── sdddRetro.md
 │
 └── sddd/
     ├── manualDeveloper.md
@@ -183,6 +186,12 @@ tuProyecto/
 - Todo en camelCase — archivos, carpetas, nombres de features y micros
 - Prefijos de fecha `YYYYMMDD` solo en carpetas de `archivo/` al momento de archivar
 - Templates siempre con prefijo `tpl` — nunca editarlos directamente; copiarlos
+
+**Nota sobre la meta-skill:**
+`.agent/skills/sddd/SKILL.md` es el orquestador único — el punto de entrada para todo el trabajo SdDd.
+Los archivos en `sub/` son sub-skills internas invocadas por el orquestador; el developer no las
+invoca directamente salvo en contextos avanzados. Todos los archivos tienen frontmatter YAML con
+`name` y `description` semántico que habilita el Progressive Disclosure del sistema SSoT.
 
 ---
 
