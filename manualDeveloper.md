@@ -278,6 +278,7 @@ archivo/20260408[nombreFeature]/
 | `encuesta.md` | MESO | Registro de la entrevista conducida | Trazabilidad del proceso |
 | `diagnosticoSddd.md` | retro | Estado del proyecto antes de aplicar SdDd | Solo en Modo Retro |
 | `planConstruccion.md` | retro | Orden para construir el SdDd retro | Solo en Modo Retro |
+| `gitMap.md` | core | Fuente de verdad de routing de artefactos a repositorios | Developer + agente al hacer push |
 
 ---
 
@@ -327,6 +328,81 @@ Los documentos de `core/` son la fuente de verdad permanente. Los features los a
 
 ---
 
+## Los ciclos de trabajo
+
+SdDd define dos ciclos operativos que estructuran cómo el developer interactúa con el agente
+en cada sesión. Ambos tienen la misma anatomía: una fase de exploración (ronda conceptual)
+y una fase de ejecución (push al cerrar).
+
+### Ciclo Develop — trabajo nuevo
+
+Para features MESO o piezas funcionales que aún no existen.
+
+| Fase | Instrucción | Estado de sesión |
+|:---|:---|:---|
+| `idea` | `"idea: [descripción breve]"` | Ronda conceptual — solo chat |
+| `develop+[variante]` | `"develop+docu"` / `"develop+gee"` / etc. | Ejecuta + documenta + push |
+
+**Apertura:** el developer escribe `idea: [descripción]`. El agente entra en ronda conceptual.
+**Cierre:** el developer escribe `develop+[variante]`. El agente ejecuta, documenta y hace push.
+
+### Ciclo Fix — corrección de comportamiento existente
+
+Para bugs, regresiones o ajustes en funcionalidad ya existente.
+
+| Fase | Instrucción | Estado de sesión |
+|:---|:---|:---|
+| `feedback` | `"feedback: [descripción del problema]"` | Ronda conceptual — solo chat |
+| `fix+[variante]` | `"fix+docu"` / `"fix+gee"` / etc. | Ejecuta + documenta + push |
+
+**Apertura:** el developer escribe `feedback: [descripción]`. El agente entra en ronda conceptual.
+**Cierre:** el developer escribe `fix+[variante]`. El agente ejecuta, documenta y hace push.
+
+### Variantes de push
+
+| Variante | Destino | Condición |
+|:---|:---|:---|
+| `+docu` | GitHub origin | Proyectos de documentación / sin GEE ni GAS |
+| `+gee` | GEE remote | Proyecto con código GeE en repositorio GEE |
+| `+gas` | Google Apps Script | Proyecto con scripts GAS |
+| `+docu+gee` | GitHub + GEE | Proyecto mixto |
+| `+docu+gas` | GitHub + GAS | Proyecto mixto |
+| `+gee+gas` | GEE + GAS | Sin repositorio GitHub |
+
+### Regla dinámica — ciclos concurrentes
+
+Cuando hay un ciclo activo y se solicita iniciar otro:
+
+1. El agente pregunta: **"¿Cerrar el ciclo actual o pausarlo?"**
+2. **Cerrar:** registra cierre con firma `[cerrado por analista | YYYYMMDD]`
+3. **Pausar:** registra evento de pausa en el documento activo; el nuevo ciclo inicia
+4. **Fin de sesión:** todo ciclo abierto se pausa automáticamente con timestamp
+5. **Inicio de sesión siguiente:** el agente muestra recordatorio de ciclos pausados
+
+**Cierre implícito:** si la resolución es evidente, el agente pregunta "¿Cerramos el ciclo?"
+— no espera instrucción explícita del developer.
+
+---
+
+## El gitMap
+
+`gitMap.md` vive en `sddd/core/`. Es la fuente de verdad sobre qué artefacto sube a
+qué repositorio. Se consulta antes de cada push; se actualiza al agregar, mover o eliminar archivos.
+
+**Estructura:**
+
+1. **Sección 1 — Mapa Extensivo:** árbol completo del proyecto con etiqueta por archivo o carpeta
+2. **Sección 2 — Mapa Resumido:** carpetas ignoradas colapsadas + lo que sube expandido
+3. **Sección 3 — Arquitectura de repos** (si hay múltiples destinos): rol de cada remote y protocolo
+
+**Etiquetas estándar:**
+- `[Subir A Github]` — sube al repositorio GitHub principal
+- `[Ignorar En Github]` — local only, no se versiona
+- `[Subir A Gee]` — se despliega al repositorio GEE via push-gee
+- `[Subir A Github Público]` — también va al repo público (cuando hay dual-push)
+
+---
+
 ## El inventario de código y los grafos Mermaid
 
 `inventarioCodigo.md` tiene dos partes complementarias:
@@ -363,3 +439,8 @@ graph LR
 | **Barrido semántico** | Lectura del código y docs por el Ag. Semántico para extraer conocimiento estructurado. |
 | **Pieza funcional** | Tipo de MICRO: unidad de código con propósito concreto y alcance limitado. |
 | **Escalar** | Decidir que un trabajo MICRO es en realidad MESO — cuando supera los límites definidos. |
+| **Ciclo Develop** | Ciclo para trabajo nuevo: `idea` (ronda conceptual) → `develop+[variante]` (ejecuta + push). |
+| **Ciclo Fix** | Ciclo para corregir comportamiento existente: `feedback` (ronda conceptual) → `fix+[variante]` (ejecuta + push). |
+| **Regla dinámica** | Protocolo de gestión cuando dos ciclos se solapan en la misma sesión: el agente pregunta cerrar o pausar. |
+| **gitMap** | Documento declarativo en `sddd/core/` que anota cada artefacto con su destino de repositorio. |
+| **Variante de push** | Sufijo que indica el destino de push al cerrar un ciclo: `+docu`, `+gee`, `+gas` o combinaciones. |
