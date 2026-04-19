@@ -24,7 +24,7 @@ Contiene el sistema completo comprimido — 27 archivos en ~41 KB.
 **Paso 1 — Copia el bootstrap a la raíz del proyecto destino**
 
 ```bash
-cp /ruta/SdDd/sddd/skills/sdddBootstrap.md /ruta/tuProyecto/
+cp /ruta/SdDd/workshop/instalador/sdddBootstrap.md /ruta/tuProyecto/
 ```
 
 **Paso 2 — Abre Claude Code en el proyecto destino**
@@ -46,8 +46,8 @@ La IA creará `sddd/` con templates, agentes, skills y el manual. Reportará cad
 
 | Situación | Instrucción a la IA |
 |:---|:---|
-| Proyecto nuevo, sin código todavía | "Lee `sddd/skills/sdddInit.md` y ejecuta el flujo de inicialización." |
-| Proyecto existente, ya tiene código | "Lee `sddd/skills/sdddRetro.md` y ejecuta el flujo completo." |
+| Proyecto nuevo, sin código todavía | "Lee `.agent/skills/sdddInit.md` y ejecuta el flujo de inicialización." |
+| Proyecto existente, ya tiene código | "Lee `.agent/skills/sdddRetro.md` y ejecuta el flujo completo." |
 
 **Sobre el archivo bootstrap**
 
@@ -118,6 +118,20 @@ Al aplicar SdDd a un proyecto, crea esta estructura en la raíz:
 
 ```
 tuProyecto/
+│
+├── .agent/
+│   ├── agents/
+│   │   ├── agSemantico.md
+│   │   ├── agEncuesta.md
+│   │   ├── agDocumentacion.md
+│   │   ├── agArquitectura.md
+│   │   ├── agTasks.md
+│   │   └── agVerificacion.md
+│   └── skills/
+│       ├── sdddInit.md
+│       ├── sdddWork.md
+│       └── sdddRetro.md
+│
 └── sddd/
     ├── manualDeveloper.md
     │
@@ -126,7 +140,8 @@ tuProyecto/
     │   ├── contextoProducto.md
     │   ├── arquitectura.md
     │   ├── stackDependencias.md
-    │   └── inventarioCodigo.md
+    │   ├── inventarioCodigo.md
+    │   └── gitMap.md
     │
     ├── macro/
     │   ├── roadmap.md
